@@ -1,0 +1,11 @@
+product_id,product_name,category,price,quantity_sold,revenue,rating,date,region
+1,Laptop,Electronics,1200,45,54000,4.5,2025-01-15,North
+2,Mouse,Accessories,25,320,8000,4.2,2025-01-16,South
+3,Keyboard,Accessories,80,210,16800,4.0,2025-01-17,East
+4,Monitor,Electronics,350,85,29750,4.6,2025-01-18,West
+5,Headphones,Accessories,120,190,22800,4.3,2025-01-19,North
+6,Desk Lamp,Office,45,155,6975,3.9,2025-01-20,South
+7,USB Hub,Accessories,35,280,9800,4.1,2025-01-21,East
+8,Webcam,Electronics,95,125,11875,4.4,2025-01-22,West
+9,Desk Organizer,Office,30,220,6600,3.7,2025-01-23,North
+10,Chair,Office,250,70,17500,4.2,2025-01-24,South
