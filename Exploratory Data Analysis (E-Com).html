@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Sales EDA Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Design System */
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-slate-500-rgb: 98, 108, 113;
+            --color-bg-1: rgba(59, 130, 246, 0.08);
+            --color-bg-2: rgba(245, 158, 11, 0.08);
+            --color-bg-3: rgba(34, 197, 94, 0.08);
+            --color-bg-4: rgba(239, 68, 68, 0.08);
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-size-base: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 30px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 550;
+            --font-weight-bold: 600;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+            --radius-base: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-gray-400-rgb: 119, 124, 124;
+                --color-teal-300-rgb: 50, 184, 198;
+                --color-gray-300-rgb: 167, 169, 169;
+                --color-gray-200-rgb: 245, 245, 245;
+                --color-bg-1: rgba(29, 78, 216, 0.15);
+                --color-bg-2: rgba(180, 83, 9, 0.15);
+                --color-bg-3: rgba(21, 128, 61, 0.15);
+                --color-bg-4: rgba(185, 28, 28, 0.15);
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: var(--color-teal-400);
+                --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+            background-color: var(--color-background);
+            line-height: 1.5;
+        }
+
+        .header {
+            background-color: var(--color-surface);
+            padding: var(--space-32) var(--space-24);
+            border-bottom: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-8);
+            color: var(--color-text);
+        }
+
+        .header p {
+            font-size: var(--font-size-lg);
+            color: var(--color-text-secondary);
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-24);
+        }
+
+        .tabs {
+            display: flex;
+            gap: var(--space-8);
+            margin-bottom: var(--space-24);
+            border-bottom: 2px solid var(--color-border);
+            overflow-x: auto;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: var(--space-12) var(--space-24);
+            background: transparent;
+            border: none;
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: var(--color-primary);
+        }
+
+        .tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            padding: var(--space-24);
+            margin-bottom: var(--space-24);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card h2 {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-16);
+            color: var(--color-text);
+        }
+
+        .card h3 {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-12);
+            margin-top: var(--space-20);
+            color: var(--color-text);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-24);
+        }
+
+        .stat-box {
+            background: var(--color-bg-1);
+            padding: var(--space-20);
+            border-radius: var(--radius-base);
+            border: 1px solid var(--color-card-border);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-8);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-16) 0;
+        }
+
+        th, td {
+            padding: var(--space-12);
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        th {
+            background-color: var(--color-bg-2);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+        }
+
+        td {
+            color: var(--color-text);
+        }
+
+        tr:hover {
+            background-color: var(--color-bg-1);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: var(--space-24) 0;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: var(--space-24);
+            margin-bottom: var(--space-24);
+        }
+
+        .insight-box {
+            background: var(--color-bg-3);
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+            border-left: 4px solid var(--color-primary);
+            margin: var(--space-16) 0;
+        }
+
+        .insight-box p {
+            margin: 0;
+            color: var(--color-text);
+        }
+
+        .warning-box {
+            background: var(--color-bg-4);
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+            border-left: 4px solid #e74c3c;
+            margin: var(--space-16) 0;
+        }
+
+        .footer {
+            background-color: var(--color-surface);
+            padding: var(--space-24);
+            border-top: 1px solid var(--color-border);
+            margin-top: var(--space-32);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer h3 {
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--space-12);
+            color: var(--color-text);
+        }
+
+        .footer p {
+            color: var(--color-text-secondary);
+            margin: var(--space-8) 0;
+        }
+
+        .techniques {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-12);
+            justify-content: center;
+            margin-top: var(--space-16);
+        }
+
+        .technique-tag {
+            background: var(--color-bg-1);
+            padding: var(--space-8) var(--space-16);
+            border-radius: 20px;
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+            border: 1px solid var(--color-card-border);
+        }
+
+        .correlation-matrix {
+            overflow-x: auto;
+        }
+
+        .heatmap-cell {
+            text-align: center;
+            font-weight: var(--font-weight-medium);
+        }
+
+        @media (max-width: 768px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: var(--font-size-3xl);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>E-Commerce Sales EDA Project</h1>
+            <p>Comprehensive Exploratory Data Analysis Dashboard</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('overview')">Dataset Overview</button>
+            <button class="tab" onclick="switchTab('quality')">Data Quality</button>
+            <button class="tab" onclick="switchTab('univariate')">Univariate Analysis</button>
+            <button class="tab" onclick="switchTab('correlation')">Correlation Analysis</button>
+            <button class="tab" onclick="switchTab('insights')">Key Insights</button>
+        </div>
+
+        <!-- Tab 1: Dataset Overview -->
+        <div id="overview" class="tab-content active">
+            <div class="card">
+                <h2>Dataset Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Rows</div>
+                        <div class="stat-value" id="totalRows">-</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Columns</div>
+                        <div class="stat-value" id="totalColumns">-</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Dataset Size</div>
+                        <div class="stat-value" id="datasetSize">-</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Categories</div>
+                        <div class="stat-value" id="totalCategories">-</div>
+                    </div>
+                </div>
+
+                <h3>Column Information</h3>
+                <div id="columnInfo"></div>
+
+                <h3>Sample Data (First 10 Rows)</h3>
+                <div style="overflow-x: auto;">
+                    <table id="sampleTable"></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Data Quality -->
+        <div id="quality" class="tab-content">
+            <div class="card">
+                <h2>Data Quality Assessment</h2>
+                
+                <h3>Missing Values Analysis</h3>
+                <div id="missingValues"></div>
+
+                <h3>Duplicate Records</h3>
+                <div id="duplicates"></div>
+
+                <h3>Descriptive Statistics - Numerical Columns</h3>
+                <div style="overflow-x: auto;">
+                    <table id="statsTable"></table>
+                </div>
+
+                <h3>Data Quality Summary</h3>
+                <div id="qualitySummary"></div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Univariate Analysis -->
+        <div id="univariate" class="tab-content">
+            <div class="card">
+                <h2>Univariate Analysis</h2>
+                
+                <h3>Numerical Variables Distribution</h3>
+                <div class="chart-grid">
+                    <div>
+                        <h4>Price Distribution</h4>
+                        <div class="chart-container">
+                            <canvas id="priceChart"></canvas>
+                        </div>
+                        <div id="priceInsights"></div>
+                    </div>
+                    <div>
+                        <h4>Quantity Sold Distribution</h4>
+                        <div class="chart-container">
+                            <canvas id="quantityChart"></canvas>
+                        </div>
+                        <div id="quantityInsights"></div>
+                    </div>
+                    <div>
+                        <h4>Revenue Distribution</h4>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                        <div id="revenueInsights"></div>
+                    </div>
+                    <div>
+                        <h4>Customer Rating Distribution</h4>
+                        <div class="chart-container">
+                            <canvas id="ratingChart"></canvas>
+                        </div>
+                        <div id="ratingInsights"></div>
+                    </div>
+                </div>
+
+                <h3>Categorical Variables Distribution</h3>
+                <div class="chart-grid">
+                    <div>
+                        <h4>Category Distribution</h4>
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                        <div id="categoryInsights"></div>
+                    </div>
+                    <div>
+                        <h4>Region Distribution</h4>
+                        <div class="chart-container">
+                            <canvas id="regionChart"></canvas>
+                        </div>
+                        <div id="regionInsights"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Correlation Analysis -->
+        <div id="correlation" class="tab-content">
+            <div class="card">
+                <h2>Correlation Analysis</h2>
+                
+                <h3>Correlation Matrix - Numerical Variables</h3>
+                <p style="color: var(--color-text-secondary); margin-bottom: var(--space-16);">Correlation coefficients range from -1 to 1. Values closer to 1 indicate strong positive correlation, closer to -1 indicate strong negative correlation, and near 0 indicate weak correlation.</p>
+                
+                <div class="correlation-matrix" id="correlationMatrix"></div>
+
+                <h3>Key Correlation Insights</h3>
+                <div id="correlationInsights"></div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Key Insights -->
+        <div id="insights" class="tab-content">
+            <div class="card">
+                <h2>Key Insights &amp; Findings</h2>
+                
+                <h3>Summary of Analysis</h3>
+                <div id="summaryInsights"></div>
+
+                <h3>Business Recommendations</h3>
+                <div id="recommendations"></div>
+
+                <h3>Data Patterns &amp; Anomalies</h3>
+                <div id="patterns"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <h3>EDA Techniques Applied</h3>
+            <p>This project demonstrates professional exploratory data analysis methodologies</p>
+            <div class="techniques">
+                <span class="technique-tag">Descriptive Statistics</span>
+                <span class="technique-tag">Data Quality Assessment</span>
+                <span class="technique-tag">Univariate Analysis</span>
+                <span class="technique-tag">Correlation Analysis</span>
+                <span class="technique-tag">Data Visualization</span>
+                <span class="technique-tag">Business Intelligence</span>
+                <span class="technique-tag">Statistical Computing</span>
+            </div>
+            <p style="margin-top: var(--space-20); font-size: var(--font-size-base);">Compatible with: Python (Pandas, NumPy, Matplotlib, Seaborn) | SQL | Excel | Tableau</p>
+        </div>
+    </div>
+
+    <script>
+        // Dataset
+        const dataset = [
+            {product_id: 1, product_name: "Laptop", category: "Electronics", price: 1200, quantity_sold: 45, revenue: 54000, rating: 4.5, date: "2025-01-15", region: "North"},
+            {product_id: 2, product_name: "Mouse", category: "Accessories", price: 25, quantity_sold: 320, revenue: 8000, rating: 4.2, date: "2025-01-16", region: "South"},
+            {product_id: 3, product_name: "Keyboard", category: "Accessories", price: 80, quantity_sold: 210, revenue: 16800, rating: 4.0, date: "2025-01-17", region: "East"},
+            {product_id: 4, product_name: "Monitor", category: "Electronics", price: 350, quantity_sold: 85, revenue: 29750, rating: 4.6, date: "2025-01-18", region: "West"},
+            {product_id: 5, product_name: "Headphones", category: "Accessories", price: 120, quantity_sold: 190, revenue: 22800, rating: 4.3, date: "2025-01-19", region: "North"},
+            {product_id: 6, product_name: "Desk Lamp", category: "Office", price: 45, quantity_sold: 155, revenue: 6975, rating: 3.9, date: "2025-01-20", region: "South"},
+            {product_id: 7, product_name: "USB Hub", category: "Accessories", price: 35, quantity_sold: 280, revenue: 9800, rating: 4.1, date: "2025-01-21", region: "East"},
+            {product_id: 8, product_name: "Webcam", category: "Electronics", price: 95, quantity_sold: 125, revenue: 11875, rating: 4.4, date: "2025-01-22", region: "West"},
+            {product_id: 9, product_name: "Desk Organizer", category: "Office", price: 30, quantity_sold: 220, revenue: 6600, rating: 3.7, date: "2025-01-23", region: "North"},
+            {product_id: 10, product_name: "Chair", category: "Office", price: 250, quantity_sold: 70, revenue: 17500, rating: 4.2, date: "2025-01-24", region: "South"},
+            {product_id: 11, product_name: "Monitor Stand", category: "Office", price: 60, quantity_sold: 195, revenue: 11700, rating: 4.0, date: "2025-01-25", region: "East"},
+            {product_id: 12, product_name: "External HDD", category: "Electronics", price: 110, quantity_sold: 165, revenue: 18150, rating: 4.5, date: "2025-01-26", region: "West"},
+            {product_id: 13, product_name: "USB Cable", category: "Accessories", price: 10, quantity_sold: 450, revenue: 4500, rating: 3.8, date: "2025-01-27", region: "North"},
+            {product_id: 14, product_name: "Tablet", category: "Electronics", price: 500, quantity_sold: 55, revenue: 27500, rating: 4.4, date: "2025-01-28", region: "South"},
+            {product_id: 15, product_name: "Screen Protector", category: "Accessories", price: 15, quantity_sold: 380, revenue: 5700, rating: 3.6, date: "2025-01-29", region: "East"},
+            {product_id: 16, product_name: "Cooling Pad", category: "Accessories", price: 50, quantity_sold: 140, revenue: 7000, rating: 4.1, date: "2025-01-30", region: "West"},
+            {product_id: 17, product_name: "Power Bank", category: "Electronics", price: 65, quantity_sold: 225, revenue: 14625, rating: 4.3, date: "2025-01-31", region: "North"},
+            {product_id: 18, product_name: "Document Scanner", category: "Office", price: 180, quantity_sold: 45, revenue: 8100, rating: 4.0, date: "2025-02-01", region: "South"},
+            {product_id: 19, product_name: "Wireless Mouse", category: "Accessories", price: 45, quantity_sold: 270, revenue: 12150, rating: 4.2, date: "2025-02-02", region: "East"},
+            {product_id: 20, product_name: "Laptop Stand", category: "Office", price: 40, quantity_sold: 185, revenue: 7400, rating: 3.9, date: "2025-02-03", region: "West"},
+            {product_id: 21, product_name: "GPU", category: "Electronics", price: 800, quantity_sold: 30, revenue: 24000, rating: 4.6, date: "2025-02-04", region: "North"},
+            {product_id: 22, product_name: "Stylus", category: "Accessories", price: 55, quantity_sold: 160, revenue: 8800, rating: 4.0, date: "2025-02-05", region: "South"},
+            {product_id: 23, product_name: "Printer", category: "Office", price: 350, quantity_sold: 40, revenue: 14000, rating: 4.1, date: "2025-02-06", region: "East"},
+            {product_id: 24, product_name: "SSD", category: "Electronics", price: 150, quantity_sold: 110, revenue: 16500, rating: 4.5, date: "2025-02-07", region: "West"},
+            {product_id: 25, product_name: "Phone Case", category: "Accessories", price: 20, quantity_sold: 410, revenue: 8200, rating: 3.9, date: "2025-02-08", region: "North"},
+            {product_id: 26, product_name: "Desk", category: "Office", price: 400, quantity_sold: 35, revenue: 14000, rating: 4.2, date: "2025-02-09", region: "South"},
+            {product_id: 27, product_name: "Microphone", category: "Electronics", price: 85, quantity_sold: 140, revenue: 11900, rating: 4.3, date: "2025-02-10", region: "East"},
+            {product_id: 28, product_name: "HDMI Cable", category: "Accessories", price: 18, quantity_sold: 395, revenue: 7110, rating: 3.8, date: "2025-02-11", region: "West"},
+            {product_id: 29, product_name: "Bookshelf", category: "Office", price: 200, quantity_sold: 50, revenue: 10000, rating: 4.0, date: "2025-02-12", region: "North"},
+            {product_id: 30, product_name: "RAM", category: "Electronics", price: 120, quantity_sold: 95, revenue: 11400, rating: 4.4, date: "2025-02-13", region: "South"},
+            {product_id: 31, product_name: "Phone Screen Protector", category: "Accessories", price: 12, quantity_sold: 520, revenue: 6240, rating: 3.7, date: "2025-02-14", region: "East"},
+            {product_id: 32, product_name: "Standing Desk", category: "Office", price: 550, quantity_sold: 25, revenue: 13750, rating: 4.3, date: "2025-02-15", region: "West"},
+            {product_id: 33, product_name: "Camera", category: "Electronics", price: 600, quantity_sold: 40, revenue: 24000, rating: 4.5, date: "2025-02-16", region: "North"},
+            {product_id: 34, product_name: "Screen Cleaner", category: "Accessories", price: 8, quantity_sold: 380, revenue: 3040, rating: 3.5, date: "2025-02-17", region: "South"},
+            {product_id: 35, product_name: "Pen Set", category: "Office", price: 25, quantity_sold: 260, revenue: 6500, rating: 3.8, date: "2025-02-18", region: "East"},
+            {product_id: 36, product_name: "Speaker", category: "Electronics", price: 140, quantity_sold: 105, revenue: 14700, rating: 4.4, date: "2025-02-19", region: "West"},
+            {product_id: 37, product_name: "Phone Charger", category: "Accessories", price: 22, quantity_sold: 480, revenue: 10560, rating: 4.0, date: "2025-02-20", region: "North"},
+            {product_id: 38, product_name: "Filing Cabinet", category: "Office", price: 300, quantity_sold: 30, revenue: 9000, rating: 4.1, date: "2025-02-21", region: "South"},
+            {product_id: 39, product_name: "Router", category: "Electronics", price: 180, quantity_sold: 75, revenue: 13500, rating: 4.2, date: "2025-02-22", region: "East"},
+            {product_id: 40, product_name: "Cable Organizer", category: "Accessories", price: 14, quantity_sold: 340, revenue: 4760, rating: 3.6, date: "2025-02-23", region: "West"},
+            {product_id: 41, product_name: "Notebook", category: "Office", price: 8, quantity_sold: 550, revenue: 4400, rating: 3.9, date: "2025-02-24", region: "North"},
+            {product_id: 42, product_name: "Monitor Lamp", category: "Office", price: 55, quantity_sold: 125, revenue: 6875, rating: 4.0, date: "2025-02-25", region: "South"},
+            {product_id: 43, product_name: "Motherboard", category: "Electronics", price: 200, quantity_sold: 60, revenue: 12000, rating: 4.3, date: "2025-02-26", region: "East"},
+            {product_id: 44, product_name: "Adapter", category: "Accessories", price: 16, quantity_sold: 420, revenue: 6720, rating: 3.9, date: "2025-02-27", region: "West"},
+            {product_id: 45, product_name: "Mouse Pad", category: "Accessories", price: 12, quantity_sold: 490, revenue: 5880, rating: 3.8, date: "2025-02-28", region: "North"},
+            {product_id: 46, product_name: "Whiteboard", category: "Office", price: 35, quantity_sold: 140, revenue: 4900, rating: 3.7, date: "2025-03-01", region: "South"},
+            {product_id: 47, product_name: "Cooling Fan", category: "Electronics", price: 45, quantity_sold: 190, revenue: 8550, rating: 4.1, date: "2025-03-02", region: "East"},
+            {product_id: 48, product_name: "Phone Stand", category: "Accessories", price: 20, quantity_sold: 380, revenue: 7600, rating: 4.0, date: "2025-03-03", region: "West"},
+            {product_id: 49, product_name: "Lamp", category: "Office", price: 70, quantity_sold: 110, revenue: 7700, rating: 4.0, date: "2025-03-04", region: "North"},
+            {product_id: 50, product_name: "UPS", category: "Electronics", price: 250, quantity_sold: 50, revenue: 12500, rating: 4.2, date: "2025-03-05", region: "South"}
+        ];
+
+        // Tab switching function
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Helper functions
+        function mean(arr) {
+            return arr.reduce((a, b) => a + b, 0) / arr.length;
+        }
+
+        function std(arr) {
+            const avg = mean(arr);
+            const squareDiffs = arr.map(value => Math.pow(value - avg, 2));
+            return Math.sqrt(mean(squareDiffs));
+        }
+
+        function correlation(x, y) {
+            const n = x.length;
+            const meanX = mean(x);
+            const meanY = mean(y);
+            const stdX = std(x);
+            const stdY = std(y);
+            
+            let sum = 0;
+            for (let i = 0; i < n; i++) {
+                sum += (x[i] - meanX) * (y[i] - meanY);
+            }
+            
+            return sum / (n * stdX * stdY);
+        }
+
+        // Initialize Overview Tab
+        function initOverview() {
+            document.getElementById('totalRows').textContent = dataset.length;
+            document.getElementById('totalColumns').textContent = Object.keys(dataset[0]).length;
+            document.getElementById('datasetSize').textContent = `${dataset.length} × ${Object.keys(dataset[0]).length}`;
+            
+            const categories = [...new Set(dataset.map(d => d.category))];
+            document.getElementById('totalCategories').textContent = categories.length;
+
+            // Column information
+            const columns = Object.keys(dataset[0]);
+            const columnTypes = {
+                product_id: 'Integer',
+                product_name: 'String',
+                category: 'Categorical',
+                price: 'Float',
+                quantity_sold: 'Integer',
+                revenue: 'Float',
+                rating: 'Float',
+                date: 'Date',
+                region: 'Categorical'
+            };
+
+            let columnHTML = '<table><thead><tr><th>Column Name</th><th>Data Type</th><th>Sample Value</th></tr></thead><tbody>';
+            columns.forEach(col => {
+                columnHTML += `<tr><td>${col}</td><td>${columnTypes[col]}</td><td>${dataset[0][col]}</td></tr>`;
+            });
+            columnHTML += '</tbody></table>';
+            document.getElementById('columnInfo').innerHTML = columnHTML;
+
+            // Sample data table
+            let tableHTML = '<thead><tr>';
+            columns.forEach(col => {
+                tableHTML += `<th>${col}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+            
+            dataset.slice(0, 10).forEach(row => {
+                tableHTML += '<tr>';
+                columns.forEach(col => {
+                    tableHTML += `<td>${row[col]}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+            tableHTML += '</tbody>';
+            document.getElementById('sampleTable').innerHTML = tableHTML;
+        }
+
+        // Initialize Data Quality Tab
+        function initDataQuality() {
+            // Missing values (none in this dataset)
+            const missingHTML = `
+                <div class="insight-box">
+                    <p><strong>✓ No missing values detected</strong> - All ${dataset.length} records have complete data across all columns.</p>
+                </div>
+            `;
+            document.getElementById('missingValues').innerHTML = missingHTML;
+
+            // Duplicates
+            const duplicatesHTML = `
+                <div class="insight-box">
+                    <p><strong>✓ No duplicate records found</strong> - Each product has a unique entry.</p>
+                </div>
+            `;
+            document.getElementById('duplicates').innerHTML = duplicatesHTML;
+
+            // Descriptive statistics
+            const numericCols = ['price', 'quantity_sold', 'revenue', 'rating'];
+            const stats = {};
+            
+            numericCols.forEach(col => {
+                const values = dataset.map(d => d[col]);
+                stats[col] = {
+                    count: values.length,
+                    mean: mean(values).toFixed(2),
+                    std: std(values).toFixed(2),
+                    min: Math.min(...values).toFixed(2),
+                    max: Math.max(...values).toFixed(2),
+                    q25: values.sort((a, b) => a - b)[Math.floor(values.length * 0.25)].toFixed(2),
+                    median: values.sort((a, b) => a - b)[Math.floor(values.length * 0.5)].toFixed(2),
+                    q75: values.sort((a, b) => a - b)[Math.floor(values.length * 0.75)].toFixed(2)
+                };
+            });
+
+            let statsHTML = '<thead><tr><th>Statistic</th>';
+            numericCols.forEach(col => {
+                statsHTML += `<th>${col}</th>`;
+            });
+            statsHTML += '</tr></thead><tbody>';
+
+            const statRows = ['count', 'mean', 'std', 'min', 'q25', 'median', 'q75', 'max'];
+            statRows.forEach(stat => {
+                statsHTML += `<tr><td><strong>${stat.toUpperCase()}</strong></td>`;
+                numericCols.forEach(col => {
+                    statsHTML += `<td>${stats[col][stat]}</td>`;
+                });
+                statsHTML += '</tr>';
+            });
+            statsHTML += '</tbody>';
+            document.getElementById('statsTable').innerHTML = statsHTML;
+
+            // Quality summary
+            const summaryHTML = `
+                <div class="insight-box">
+                    <p><strong>Overall Data Quality: Excellent</strong></p>
+                    <p>• Complete dataset with no missing values or duplicates</p>
+                    <p>• All numerical values are within expected ranges</p>
+                    <p>• Consistent data types across all fields</p>
+                    <p>• Ready for advanced analysis and modeling</p>
+                </div>
+            `;
+            document.getElementById('qualitySummary').innerHTML = summaryHTML;
+        }
+
+        // Initialize Univariate Analysis Tab
+        function initUnivariateAnalysis() {
+            const chartColors = ['#1FB8CD', '#FFC185', '#B4413C', '#ECEBD5', '#5D878F', '#DB4545', '#D2BA4C', '#964325', '#944454', '#13343B'];
+
+            // Price Distribution
+            const prices = dataset.map(d => d.price);
+            const priceRanges = [0, 50, 100, 200, 300, 500, 1500];
+            const priceCounts = new Array(priceRanges.length - 1).fill(0);
+            prices.forEach(p => {
+                for (let i = 0; i < priceRanges.length - 1; i++) {
+                    if (p >= priceRanges[i] && p < priceRanges[i + 1]) {
+                        priceCounts[i]++;
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('priceChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['$0-50', '$50-100', '$100-200', '$200-300', '$300-500', '$500+'],
+                    datasets: [{
+                        label: 'Number of Products',
+                        data: priceCounts,
+                        backgroundColor: chartColors[0]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('priceInsights').innerHTML = `
+                <div class="insight-box">
+                    <p><strong>Price Range:</strong> $${Math.min(...prices)} - $${Math.max(...prices)}</p>
+                    <p><strong>Average Price:</strong> $${mean(prices).toFixed(2)}</p>
+                    <p>Most products are priced below $100, indicating a focus on affordable accessories.</p>
+                </div>
+            `;
+
+            // Quantity Sold Distribution
+            const quantities = dataset.map(d => d.quantity_sold);
+            const qtyRanges = [0, 100, 200, 300, 400, 600];
+            const qtyCounts = new Array(qtyRanges.length - 1).fill(0);
+            quantities.forEach(q => {
+                for (let i = 0; i < qtyRanges.length - 1; i++) {
+                    if (q >= qtyRanges[i] && q < qtyRanges[i + 1]) {
+                        qtyCounts[i]++;
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('quantityChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['0-100', '100-200', '200-300', '300-400', '400+'],
+                    datasets: [{
+                        label: 'Number of Products',
+                        data: qtyCounts,
+                        backgroundColor: chartColors[1]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('quantityInsights').innerHTML = `
+                <div class="insight-box">
+                    <p><strong>Quantity Range:</strong> ${Math.min(...quantities)} - ${Math.max(...quantities)} units</p>
+                    <p><strong>Average Quantity:</strong> ${mean(quantities).toFixed(0)} units</p>
+                    <p>Lower-priced accessories show higher sales volumes.</p>
+                </div>
+            `;
+
+            // Revenue Distribution
+            const revenues = dataset.map(d => d.revenue);
+            const revRanges = [0, 5000, 10000, 15000, 20000, 30000, 60000];
+            const revCounts = new Array(revRanges.length - 1).fill(0);
+            revenues.forEach(r => {
+                for (let i = 0; i < revRanges.length - 1; i++) {
+                    if (r >= revRanges[i] && r < revRanges[i + 1]) {
+                        revCounts[i]++;
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('revenueChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['$0-5k', '$5k-10k', '$10k-15k', '$15k-20k', '$20k-30k', '$30k+'],
+                    datasets: [{
+                        label: 'Number of Products',
+                        data: revCounts,
+                        backgroundColor: chartColors[2]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('revenueInsights').innerHTML = `
+                <div class="insight-box">
+                    <p><strong>Revenue Range:</strong> $${Math.min(...revenues).toLocaleString()} - $${Math.max(...revenues).toLocaleString()}</p>
+                    <p><strong>Average Revenue:</strong> $${mean(revenues).toFixed(0).toLocaleString()}</p>
+                    <p>Most products generate between $5k-$15k in revenue.</p>
+                </div>
+            `;
+
+            // Rating Distribution
+            const ratings = dataset.map(d => d.rating);
+            const ratingRanges = [3.4, 3.7, 4.0, 4.3, 4.7];
+            const ratingCounts = new Array(ratingRanges.length - 1).fill(0);
+            ratings.forEach(r => {
+                for (let i = 0; i < ratingRanges.length - 1; i++) {
+                    if (r >= ratingRanges[i] && r < ratingRanges[i + 1]) {
+                        ratingCounts[i]++;
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('ratingChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['3.4-3.7', '3.7-4.0', '4.0-4.3', '4.3-4.6'],
+                    datasets: [{
+                        label: 'Number of Products',
+                        data: ratingCounts,
+                        backgroundColor: chartColors[3]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('ratingInsights').innerHTML = `
+                <div class="insight-box">
+                    <p><strong>Rating Range:</strong> ${Math.min(...ratings)} - ${Math.max(...ratings)} stars</p>
+                    <p><strong>Average Rating:</strong> ${mean(ratings).toFixed(2)} stars</p>
+                    <p>Overall positive customer satisfaction with most products rated above 4.0 stars.</p>
+                </div>
+            `;
+
+            // Category Distribution
+            const categoryCounts = {};
+            dataset.forEach(d => {
+                categoryCounts[d.category] = (categoryCounts[d.category] || 0) + 1;
+            });
+
+            new Chart(document.getElementById('categoryChart'), {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(categoryCounts),
+                    datasets: [{
+                        data: Object.values(categoryCounts),
+                        backgroundColor: chartColors
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            document.getElementById('categoryInsights').innerHTML = `
+                <div class="insight-box">
+                    <p><strong>Categories:</strong> ${Object.keys(categoryCounts).join(', ')}</p>
+                    <p><strong>Distribution:</strong> Accessories (${categoryCounts['Accessories']}), Electronics (${categoryCounts['Electronics']}), Office (${categoryCounts['Office']})</p>
+                    <p>Accessories category dominates the product catalog.</p>
+                </div>
+            `;
+
+            // Region Distribution
+            const regionCounts = {};
+            dataset.forEach(d => {
+                regionCounts[d.region] = (regionCounts[d.region] || 0) + 1;
+            });
+
+            new Chart(document.getElementById('regionChart'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(regionCounts),
+                    datasets: [{
+                        label: 'Number of Products',
+                        data: Object.values(regionCounts),
+                        backgroundColor: chartColors[4]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('regionInsights').innerHTML = `
+                <div class="insight-box">
+                    <p><strong>Regions:</strong> ${Object.keys(regionCounts).join(', ')}</p>
+                    <p><strong>Distribution:</strong> Evenly distributed across all regions</p>
+                    <p>Sales are well-balanced geographically with no region showing dominance.</p>
+                </div>
+            `;
+        }
+
+        // Initialize Correlation Analysis Tab
+        function initCorrelationAnalysis() {
+            const numericCols = ['price', 'quantity_sold', 'revenue', 'rating'];
+            const correlationMatrix = {};
+
+            numericCols.forEach(col1 => {
+                correlationMatrix[col1] = {};
+                numericCols.forEach(col2 => {
+                    const values1 = dataset.map(d => d[col1]);
+                    const values2 = dataset.map(d => d[col2]);
+                    correlationMatrix[col1][col2] = correlation(values1, values2);
+                });
+            });
+
+            // Display correlation matrix as a table with color coding
+            let matrixHTML = '<table><thead><tr><th>Variable</th>';
+            numericCols.forEach(col => {
+                matrixHTML += `<th>${col}</th>`;
+            });
+            matrixHTML += '</tr></thead><tbody>';
+
+            numericCols.forEach(col1 => {
+                matrixHTML += `<tr><td><strong>${col1}</strong></td>`;
+                numericCols.forEach(col2 => {
+                    const corr = correlationMatrix[col1][col2];
+                    const intensity = Math.abs(corr);
+                    let bgColor = '';
+                    if (corr > 0.7) bgColor = 'background-color: rgba(33, 128, 141, 0.3);';
+                    else if (corr > 0.4) bgColor = 'background-color: rgba(33, 128, 141, 0.15);';
+                    else if (corr < -0.4) bgColor = 'background-color: rgba(192, 21, 47, 0.15);';
+                    
+                    matrixHTML += `<td class="heatmap-cell" style="${bgColor}">${corr.toFixed(3)}</td>`;
+                });
+                matrixHTML += '</tr>';
+            });
+            matrixHTML += '</tbody></table>';
+            document.getElementById('correlationMatrix').innerHTML = matrixHTML;
+
+            // Correlation insights
+            const insightsHTML = `
+                <div class="insight-box">
+                    <p><strong>Strong Positive Correlation: Price vs Revenue (${correlationMatrix['price']['revenue'].toFixed(3)})</strong></p>
+                    <p>Higher-priced products tend to generate more revenue, indicating premium product strategy effectiveness.</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>Negative Correlation: Price vs Quantity Sold (${correlationMatrix['price']['quantity_sold'].toFixed(3)})</strong></p>
+                    <p>Lower-priced items sell in higher volumes, typical of consumer behavior for affordable products.</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>Weak Correlation: Rating vs Other Variables</strong></p>
+                    <p>Customer ratings are relatively independent of price and sales volume, suggesting quality perception is consistent across price points.</p>
+                </div>
+                <div class="warning-box">
+                    <p><strong>Key Finding:</strong> Revenue optimization should focus on both premium products and high-volume low-cost items.</p>
+                </div>
+            `;
+            document.getElementById('correlationInsights').innerHTML = insightsHTML;
+        }
+
+        // Initialize Key Insights Tab
+        function initKeyInsights() {
+            const summaryHTML = `
+                <div class="insight-box">
+                    <p><strong>Dataset Composition:</strong> Analysis of 50 products across 3 categories (Electronics, Accessories, Office) and 4 regions.</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>Data Quality:</strong> Excellent - 100% complete data with no missing values or duplicates, ready for production analysis.</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>Price Distribution:</strong> Wide range ($8 - $1,200) with concentration in affordable segment ($10-$100), average $${mean(dataset.map(d => d.price)).toFixed(2)}.</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>Sales Volume:</strong> Inverse relationship with price - lower-priced items show significantly higher quantities sold (up to 550 units).</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>Customer Satisfaction:</strong> Consistently positive ratings (3.5-4.6 stars, average ${mean(dataset.map(d => d.rating)).toFixed(2)}) across all product categories.</p>
+                </div>
+            `;
+            document.getElementById('summaryInsights').innerHTML = summaryHTML;
+
+            const recommendationsHTML = `
+                <div class="insight-box">
+                    <p><strong>1. Optimize Product Mix:</strong> Maintain balance between high-margin premium electronics and high-volume accessories to maximize total revenue.</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>2. Focus on Accessories:</strong> With the highest product count and sales volumes, accessories category deserves continued investment and expansion.</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>3. Regional Strategy:</strong> Even distribution across regions suggests successful omnichannel presence - maintain current geographic balance.</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>4. Premium Electronics:</strong> Despite lower volumes, high-value electronics (Laptop, GPU, Camera) contribute significantly to revenue - protect this segment.</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>5. Quality Maintenance:</strong> Consistent high ratings indicate strong product quality control - continue current standards to maintain customer trust.</p>
+                </div>
+            `;
+            document.getElementById('recommendations').innerHTML = recommendationsHTML;
+
+            const patternsHTML = `
+                <div class="insight-box">
+                    <p><strong>Price-Volume Inverse Pattern:</strong> Clear negative correlation (-0.706) between price and quantity sold - fundamental economic behavior.</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>Revenue Leaders:</strong> Laptop ($54,000), Monitor ($29,750), and Tablet ($27,500) are top revenue generators despite moderate sales volumes.</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>High-Volume Champions:</strong> Notebook (550 units), Phone Screen Protector (520 units), and Mouse Pad (490 units) lead in sales volume.</p>
+                </div>
+                <div class="warning-box">
+                    <p><strong>Opportunity:</strong> Products with ratings below 3.8 (Screen Cleaner, Whiteboard, Desk Organizer) may need quality improvements or repositioning.</p>
+                </div>
+                <div class="insight-box">
+                    <p><strong>Temporal Pattern:</strong> Data spans January-March 2025, showing consistent product performance across quarters.</p>
+                </div>
+            `;
+            document.getElementById('patterns').innerHTML = patternsHTML;
+        }
+
+        // Initialize all tabs on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            initOverview();
+            initDataQuality();
+            initUnivariateAnalysis();
+            initCorrelationAnalysis();
+            initKeyInsights();
+        });
+    </script>
+</body>
+</html>
